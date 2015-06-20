@@ -1,0 +1,152 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 ## removes a string from a line \
+def removeString(theString, line):\
+    linelist = line.split(theString , 1)\
+    return linelist[0]\
+\
+## creates a dictionary of countries and their adjacent countries\
+## Should sort this somehow??????\
+## creating a dictionary of the countries and adjacent countries\
+dictionary = \{\}\
+with open('testingthings.txt') as file:\
+    for line in file:\
+        value = line.split("-" , 1)[0]\
+        #print(value)\
+        definition = removeString("\\n" , line).split("-")\
+        del definition[0]\
+        #print (definition)\
+        dictionary[value] = definition\
+\
+#print(dictionary)\
+\
+\
+\
+## creating a dictionary of the number values \
+numberValues = \{\}\
+\
+x = 0\
+\
+with open('testingthings.txt') as file:\
+    for line in file:\
+        country = line.split("-" , 1)[0]\
+        if country not in numberValues:\
+            numberValues[country] = x\
+            x += 1 \
+#print(numberValues)\
+\
+\
+\
+## creating a dictionary of the countries as numbers \
+numDictionary = \{\}\
+for country in dictionary:\
+    listOfNumAdj = []\
+    for adjCountry in dictionary[country]:\
+          listOfNumAdj.append(numberValues[adjCountry])\
+    numDictionary[numberValues[country]] = listOfNumAdj\
+\
+print(numDictionary)\
+\
+\
+\
+## Start of Floyd-Warshall\
+numOfCountries = len(dictionary)\
+\
+INF = 99999\
+\
+## Makes an initial chart numOfCountries^2\
+## that is filled with inf filled in each box \
+chart = [[INF for x in range(numOfCountries)] for x in range(numOfCountries)] \
+\
+\
+## keeping track of indicies for graphs that start at 0\
+numIndexed = numOfCountries - 1 \
+\
+## for each country, the distance to itself is 0\
+for country in dictionary:\
+    chart[numberValues[country]][numberValues[country]] = 0\
+    #print(numberValues[country])\
+    #print("1" ,chart[numberValues[country]][numberValues[country]])\
+    for adjacentCountry in dictionary[country]:\
+        ## for each adjacent country in the adjacency list,\
+        ## make the direct distance of them to be 1\
+        chart[numberValues[country]][numberValues[adjacentCountry]] = 1\
+\
+## for each node in the list (going left)\
+for k in range(numOfCountries):\
+    ## for each node in the list (going left)\
+    for i in range(numOfCountries):\
+        ## for each node in the list (going right)\
+        for j in range(numOfCountries):\
+            ## if a position can be accessible in lesser steps\
+            chart[i][j] = min(chart[i][j], chart[i][k] + chart[k][j])\
+\
+## for some reason, the 0'th column is not changing, so manually changing it here\
+for x in range(numOfCountries):\
+    chart[x][0] = chart[0][x]\
+\
+for line in chart:\
+    print(line)\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+ireland-united kingdom\
+united kingdom-france-belgium-netherlands\
+france-united kingdom-belgium-luxembourg-germany-switzerland-italy-spain\
+spain-portugal-france\
+portugal-spain\
+italy-france-switzerland-austria-slovenia\
+switzerland-france-germany-italy-austria\
+belgium-luxembourg-netherlands-germany\
+luxembourg-belgium-france-germany\
+netherlands-belgium-germany\
+germany-netherlands-belgium-luxembourg-france-switzerland-austria-czech republic-poland-denmark\
+denmark-germany\
+czech republic-germany-poland-slovakia-austria\
+austria-germany-czech republic-slovakia-hungary-slovenia-italy-switzerland\
+slovenia-austria-italy-hungary-croatia\
+croatia-bosnia and herzegovina-hungary-serbia-slovenia\
+bosnia and herzegovina-croatia-serbia-montenegro\
+montenegro-bosnia and herzegovina-serbia-kosovo-albania\
+albania-montenegro-kosovo-macedonia-greece\
+kosovo-serbia-macedonia-albania-montenegro\
+macedonia-kosovo-serbia-bulgaria-greece-albania\
+norway-sweden-finland-russia\
+sweden-denmark-finland-norway\
+finland-russia-sweden-norway\
+russia-finland-estonia-latvia-belarus-ukraine-georgia-azerbaijan\
+estonia-latvia-russia\
+latvia-estonia-russia-belarus-lithuania\
+belarus-latvia-lithuania-poland-ukraine-russia\
+ukraine-belarus-poland-slovakia-hungary-romania-moldova-russia\
+poland-belarus-ukraine-slovakia-czech republic-germany\
+hungary-slovakia-ukraine-romania-serbia-croatia-slovenia-austria\
+romania-ukraine-moldova-bulgaria-serbia-hungary\
+serbia-hungary-croatia-bosnia and herzegovina-montenegro-kosovo-macedonia-bulgaria-romania\
+bulgaria-romania-macedonia-serbia-greece\
+moldova-ukraine-romania\
+slovakia-poland-czech republic-austria-hungary-ukraine\
+moldova-ukraine-romania\
+lithuania-latvia-belarus-poland\
+turkey-bulgaria-greece-georgia-armenia\
+azerbaijan-armenia-georgia-russia\
+armenia-turkey-georgia-azerbaijan\
+georgia-russia-azerbaijan-armenia-turkey\
+greece-albania-macedonia-bulgaria-turkey}
